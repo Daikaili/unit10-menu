@@ -1,13 +1,16 @@
 package com.example.menu;
 
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
       TextView tView[]=new TextView[4];
@@ -70,4 +73,31 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
+	@SuppressLint("NewApi")
+	public boolean onOptionsItemSeiected(MenuItem item){
+		switch(item.getItemId()){
+		case R.id.start:
+		case R.id.stop:
+		  invalidateOptionsMenu();
+		  break;
+		case R.id.exit:
+			finish();
+			break;
+     	default:
+			break;
+		}
+		Toast.makeText(MainActivity.this, item.getTitle()+"±»µ¥»÷ÁË",1000).show();
+		return true;
+		
+	}
+	public boolean onPrepareOptionMenu(Menu menu){
+		super.onPrepareOptionsMenu(menu);
+		MenuItem start=menu.findItem(R.id.start);
+		MenuItem stop=menu.findItem(R.id.stop);
+		boolean flag = false;
+		start.setEnabled(flag);
+		stop.setEnabled(!flag);
+		return true;
+		
+	}
 }
