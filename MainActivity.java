@@ -3,12 +3,18 @@ package com.example.menu;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +36,10 @@ public class MainActivity extends Activity {
 			//为文本框注册上下文菜单
 			}
 	}
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu, android.view.View, android.view.ContextMenu.ContextMenuInfo)
+	 * 真正创建上下文菜单的代码 
+	 */
 	public void onCreateContextMenu(ContextMenu menu,View v,ContextMenuInfo menuInfo){
 		//真正创建上下文菜单的代码 
 		switch(v.getId()){
@@ -66,6 +76,10 @@ public class MainActivity extends Activity {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 * 补充完整 onCreateOptionsMenu方法
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -90,6 +104,11 @@ public class MainActivity extends Activity {
 		return true;
 		
 	}
+	/**
+	 * @param menu
+	 * 调用和完整onPrepareOptionMenu方法
+	 * @return
+	 */
 	public boolean onPrepareOptionMenu(Menu menu){
 		super.onPrepareOptionsMenu(menu);
 		MenuItem start=menu.findItem(R.id.start);
@@ -97,6 +116,65 @@ public class MainActivity extends Activity {
 		boolean flag = false;
 		start.setEnabled(flag);
 		stop.setEnabled(!flag);
+		return true;
+		
+	}
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onContextItemSelected(android.view.MenuItem)
+	 * 重写完整activity中onCreateContextItemSelectd方法
+	 */
+	public boolean onContextItemSelected(MenuItem item){
+		String mesString="你选择的是：";
+		int count=item.getItemId()-Menu.FIRST;
+		num=count/10;
+		if(num>10){
+			num=num/10;
+		}
+		//计算num的值并确保与上面的值一致
+		if(item.getItemId()==(Menu.FIRST+num*10+1)){
+			 mesString+="发送";                             
+		}
+		else if(item.getItemId()==(Menu.FIRST+num*10+2)){
+			mesString+="进入颜色设置界面";   
+		}else if(item.getItemId()==(Menu.FIRST+num*100+21)){
+			tView[num-1].setTextColor(Color.RED);
+			//是否选择红色，且设置文本框颜色
+		}else if(item.getItemId()==(Menu.FIRST+num*100+22)){
+			tView[num-1].setTextColor(Color.BLUE);
+			//是否选择蓝色，且设置文本框颜色
+		}else if(item.getItemId()==(Menu.FIRST+num*100+23)){
+			tView[num-1].setTextColor(Color.GREEN);
+			//是否选择绿色，且设置文本框颜色
+		}else if(item.getItemId()==(Menu.FIRST+num*10+3)){
+			final EditText inputname=new EditText(this);
+			//创建一个文本编辑框
+			AlertDialog bDialog=new AlertDialog.Builder(MainActivity.this)
+			.setIcon(android.R.drawable.btn_star)
+			.setTitle("请输入新名字")
+			.setView(inputname)
+			.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					tView[num-1].setText(inputname.getText().toString());
+				}
+			}).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					
+				}
+			}).create();
+			//设置对话框图标，标题，对话框显示控件
+		bDialog.show();
+		mesString+="重命名成功";
+	}else if(item.getItemId()==(Menu.FIRST+num*10+4)){
+		mesString+="删除";
+	}
+		Toast.makeText(this, mesString,Toast.LENGTH_LONG).show();
+		
 		return true;
 		
 	}
